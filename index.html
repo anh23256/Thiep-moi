@@ -1,536 +1,1143 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Wedding Invitation</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Lê Văn Anh & Nguyễn Thuỳ Anh Wedding</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
 <style>
+
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html{
+scroll-behavior:smooth;
 }
 
 body{
-    overflow:hidden;
-    background:#f8f1ea;
-    font-family:'Cormorant Garamond', serif;
-    color:#fff;
+background:#180506;
+font-family:'Cormorant Garamond',serif;
+overflow-x:hidden;
+color:white;
 }
 
-/* ================= OPEN SCREEN ================= */
+/* ================= PRELOADER ================= */
 
-.open-screen{
-    position:fixed;
-    inset:0;
-    background:linear-gradient(135deg,#7b0012,#b3001b,#7b0012);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:9999;
-    overflow:hidden;
+.loader{
+position:fixed;
+inset:0;
+background:#240608;
+z-index:999999;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+transition:1.5s;
 }
 
-.open-screen::before{
-    content:"";
-    position:absolute;
-    width:180%;
-    height:180%;
-    background:
-    radial-gradient(circle,rgba(255,255,255,.12) 1px,transparent 1px);
-    background-size:40px 40px;
-    animation:bgMove 25s linear infinite;
+.loader.hide{
+opacity:0;
+pointer-events:none;
 }
 
-@keyframes bgMove{
-    from{transform:rotate(0deg);}
-    to{transform:rotate(360deg);}
+.envelope-wrap{
+position:relative;
+width:360px;
+height:250px;
+cursor:pointer;
+transform-style:preserve-3d;
 }
 
 .envelope{
-    width:340px;
-    height:230px;
-    position:relative;
-    cursor:pointer;
-    animation:float 3s ease-in-out infinite;
+position:absolute;
+width:100%;
+height:100%;
+background:#8b0015;
+border-radius:10px;
+overflow:hidden;
+box-shadow:
+0 20px 60px rgba(0,0,0,.5),
+0 0 80px rgba(255,0,50,.2);
 }
 
-@keyframes float{
-    0%,100%{transform:translateY(0);}
-    50%{transform:translateY(-10px);}
+.envelope::before{
+content:'';
+position:absolute;
+width:100%;
+height:100%;
+background:
+linear-gradient(135deg,
+rgba(255,255,255,.08),
+transparent);
 }
 
-.envelope-body{
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:#c40d28;
-    border-radius:10px;
-    box-shadow:0 25px 50px rgba(0,0,0,.4);
+.flap{
+position:absolute;
+width:100%;
+height:100%;
+background:#b3001b;
+clip-path:polygon(0 0,50% 55%,100% 0);
+transform-origin:top;
+z-index:10;
+transition:1.8s cubic-bezier(.77,0,.18,1);
 }
 
-.envelope-top{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    clip-path:polygon(0 0,50% 55%,100% 0);
-    background:#e22b45;
-    transform-origin:top;
-    transition:1.5s;
-    z-index:5;
+.card{
+position:absolute;
+left:6%;
+top:6%;
+width:88%;
+height:88%;
+background:#f8ede3;
+border-radius:8px;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+color:#6d0011;
+transform:translateY(40px);
+transition:1.8s cubic-bezier(.77,0,.18,1);
 }
 
-.invite-card{
-    position:absolute;
-    width:88%;
-    height:88%;
-    background:#fffaf5;
-    left:6%;
-    top:6%;
-    border-radius:8px;
-    color:#5b0000;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
-    text-align:center;
-    transform:translateY(50px);
-    transition:1.8s;
+.card h2{
+font-family:'Great Vibes',cursive;
+font-size:48px;
+font-weight:400;
 }
 
-.invite-card h1{
-    font-family:'Great Vibes', cursive;
-    font-size:50px;
-    margin-bottom:10px;
+.card p{
+font-size:22px;
+letter-spacing:4px;
+margin:8px 0;
 }
 
-.invite-card p{
-    font-size:20px;
-    letter-spacing:1px;
+.envelope-wrap.open .flap{
+transform:rotateX(180deg);
 }
 
-.open-btn{
-    position:absolute;
-    bottom:-70px;
-    left:50%;
-    transform:translateX(-50%);
-    color:#fff;
-    font-size:22px;
-    letter-spacing:3px;
-    animation:pulse 1.5s infinite;
+.envelope-wrap.open .card{
+transform:translateY(-120px);
+}
+
+.tap-text{
+margin-top:60px;
+font-size:18px;
+letter-spacing:5px;
+animation:pulse 1.5s infinite;
 }
 
 @keyframes pulse{
-    0%{opacity:.5}
-    50%{opacity:1}
-    100%{opacity:.5}
+0%,100%{opacity:.4;}
+50%{opacity:1;}
 }
 
-/* OPEN */
-
-.open .envelope-top{
-    transform:rotateX(180deg);
-}
-
-.open .invite-card{
-    transform:translateY(-110px);
-}
-
-/* ================= MAIN ================= */
-
-.main{
-    position:fixed;
-    inset:0;
-    overflow-y:auto;
-    opacity:0;
-    visibility:hidden;
-    transition:1.5s;
-    background:#f8f1ea;
-}
-
-.main.show{
-    opacity:1;
-    visibility:visible;
-}
+/* ================= HERO ================= */
 
 .hero{
-    height:100vh;
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
+position:relative;
+height:100vh;
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
 }
 
-.hero::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1974&auto=format&fit=crop') center/cover;
-    transform:scale(1.08);
-    filter:brightness(.45);
-    animation:zoom 20s linear infinite alternate;
+.hero-bg{
+position:absolute;
+inset:0;
+background:url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1974&auto=format&fit=crop') center/cover;
+transform:scale(1.15);
 }
 
-@keyframes zoom{
-    from{transform:scale(1.08);}
-    to{transform:scale(1.18);}
-}
-
-.overlay{
-    position:absolute;
-    inset:0;
-    background:rgba(0,0,0,.25);
+.dark-overlay{
+position:absolute;
+inset:0;
+background:
+linear-gradient(to bottom,
+rgba(0,0,0,.5),
+rgba(24,5,6,.9));
 }
 
 .hero-content{
-    position:relative;
-    z-index:2;
-    text-align:center;
-    padding:20px;
-    animation:fadeUp 2s ease;
+position:relative;
+z-index:5;
+text-align:center;
+padding:20px;
 }
 
-@keyframes fadeUp{
-    from{
-        opacity:0;
-        transform:translateY(40px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-.small{
-    font-size:24px;
-    letter-spacing:4px;
-    margin-bottom:20px;
+.save{
+font-size:24px;
+letter-spacing:8px;
+margin-bottom:25px;
+opacity:.9;
 }
 
 .names{
-    font-family:'Great Vibes', cursive;
-    font-size:95px;
-    line-height:1.1;
+font-family:'Great Vibes',cursive;
+font-size:120px;
+line-height:1;
+font-weight:400;
 }
 
 .and{
-    font-size:40px;
-    margin:10px 0;
+font-size:40px;
+margin:20px 0;
+opacity:.8;
 }
 
 .date{
-    margin-top:30px;
-    font-size:30px;
-    letter-spacing:3px;
+margin-top:30px;
+font-size:32px;
+letter-spacing:4px;
+}
+
+.scroll{
+position:absolute;
+bottom:40px;
+left:50%;
+transform:translateX(-50%);
+font-size:15px;
+letter-spacing:5px;
+opacity:.7;
+animation:float 2s infinite;
+}
+
+@keyframes float{
+0%,100%{transform:translate(-50%,0);}
+50%{transform:translate(-50%,-10px);}
+}
+
+/* ================= SECTION ================= */
+
+.section{
+padding:140px 10%;
+position:relative;
+}
+
+.section-title{
+font-family:'Great Vibes',cursive;
+font-size:85px;
+text-align:center;
+margin-bottom:30px;
+color:#f0d4bc;
+}
+
+.section-text{
+max-width:900px;
+margin:auto;
+text-align:center;
+font-size:28px;
+line-height:1.8;
+color:#eee;
+opacity:.9;
+}
+ /* ================= LOVE STORY ================= */
+
+.love-story{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:80px;
+align-items:center;
+margin-top:80px;
+}
+
+.story-image{
+position:relative;
+height:700px;
+overflow:hidden;
+border-radius:30px;
+box-shadow:
+0 30px 80px rgba(0,0,0,.5),
+0 0 60px rgba(255,0,80,.15);
+}
+
+.story-image img{
+width:100%;
+height:100%;
+object-fit:cover;
+transform:scale(1.08);
+transition:2s;
+}
+
+.story-image:hover img{
+transform:scale(1.15);
+}
+
+.story-content h3{
+font-family:'Great Vibes',cursive;
+font-size:70px;
+margin-bottom:30px;
+color:#f0d4bc;
+}
+
+.story-content p{
+font-size:25px;
+line-height:1.9;
+opacity:.9;
+}
+
+/* ================= COUNTDOWN ================= */
+
+.countdown-wrap{
+margin-top:100px;
+display:flex;
+justify-content:center;
+gap:30px;
+flex-wrap:wrap;
+}
+
+.count-box{
+width:170px;
+height:170px;
+background:
+linear-gradient(145deg,
+rgba(255,255,255,.08),
+rgba(255,255,255,.02));
+backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,.08);
+border-radius:30px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+box-shadow:
+0 20px 50px rgba(0,0,0,.3),
+inset 0 0 20px rgba(255,255,255,.03);
+transition:.5s;
+}
+
+.count-box:hover{
+transform:translateY(-10px);
+box-shadow:
+0 30px 80px rgba(255,0,70,.2);
+}
+
+.count-box h2{
+font-size:70px;
+font-weight:300;
+color:#fff;
+}
+
+.count-box span{
+font-size:18px;
+letter-spacing:5px;
+margin-top:10px;
+opacity:.8;
+}
+
+/* ================= GALLERY ================= */
+
+.gallery{
+margin-top:120px;
+display:grid;
+grid-template-columns:repeat(12,1fr);
+grid-auto-rows:250px;
+gap:20px;
+}
+
+.gallery .item{
+position:relative;
+overflow:hidden;
+border-radius:25px;
+cursor:pointer;
+}
+
+.gallery .item img{
+width:100%;
+height:100%;
+object-fit:cover;
+transition:1.5s;
+filter:brightness(.8);
+}
+
+.gallery .item:hover img{
+transform:scale(1.12);
+filter:brightness(1);
+}
+
+.gallery .item::after{
+content:'';
+position:absolute;
+inset:0;
+background:
+linear-gradient(to top,
+rgba(0,0,0,.5),
+transparent);
+opacity:0;
+transition:.6s;
+}
+
+.gallery .item:hover::after{
+opacity:1;
+}
+
+.item1{
+grid-column:span 6;
+grid-row:span 2;
+}
+
+.item2{
+grid-column:span 3;
+}
+
+.item3{
+grid-column:span 3;
+}
+
+.item4{
+grid-column:span 4;
+}
+
+.item5{
+grid-column:span 4;
+}
+
+.item6{
+grid-column:span 4;
+}
+
+/* ================= EVENT ================= */
+
+.event-box{
+margin-top:100px;
+padding:80px;
+border-radius:40px;
+background:
+linear-gradient(145deg,
+rgba(255,255,255,.07),
+rgba(255,255,255,.02));
+
+border:1px solid rgba(255,255,255,.06);
+
+backdrop-filter:blur(10px);
+
+text-align:center;
+
+box-shadow:
+0 20px 60px rgba(0,0,0,.4);
+}
+
+.event-box h3{
+font-family:'Great Vibes',cursive;
+font-size:75px;
+margin-bottom:30px;
+color:#f0d4bc;
+}
+
+.event-info{
+font-size:30px;
+line-height:2;
+letter-spacing:2px;
+}
+
+/* ================= PARTICLES ================= */
+
+.particles{
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:1;
+overflow:hidden;
+}
+
+.particle{
+position:absolute;
+width:4px;
+height:4px;
+background:rgba(255,255,255,.5);
+border-radius:50%;
+animation:particleMove linear infinite;
+}
+
+@keyframes particleMove{
+from{
+transform:translateY(100vh) scale(0);
+opacity:0;
+}
+20%{
+opacity:1;
+}
+to{
+transform:translateY(-10vh) scale(1);
+opacity:0;
+}
+}
+
+/* ================= MUSIC ================= */
+
+.music-btn{
+position:fixed;
+right:25px;
+bottom:25px;
+width:70px;
+height:70px;
+border-radius:50%;
+border:none;
+background:#8b0015;
+color:white;
+font-size:26px;
+cursor:pointer;
+z-index:999;
+box-shadow:
+0 10px 40px rgba(0,0,0,.4),
+0 0 30px rgba(255,0,70,.3);
+
+transition:.4s;
+}
+
+.music-btn:hover{
+transform:scale(1.1);
+}
+
+.music-btn.playing{
+animation:rotate 4s linear infinite;
+}
+
+@keyframes rotate{
+from{
+transform:rotate(0);
+}
+to{
+transform:rotate(360deg);
+}
+}
+
+/* ================= FOOTER ================= */
+
+.footer{
+padding:180px 20px 120px;
+text-align:center;
+position:relative;
+overflow:hidden;
+}
+
+.footer::before{
+content:'';
+position:absolute;
+inset:0;
+background:
+radial-gradient(circle at center,
+rgba(255,0,70,.2),
+transparent 70%);
+}
+
+.footer h2{
+font-family:'Great Vibes',cursive;
+font-size:120px;
+margin-bottom:20px;
+position:relative;
+z-index:2;
+}
+
+.footer p{
+font-size:28px;
+letter-spacing:4px;
+position:relative;
+z-index:2;
+opacity:.85;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:991px){
+
+.names{
+font-size:70px;
 }
 
 .section{
-    padding:100px 20px;
-    text-align:center;
-    color:#4a1d1d;
+padding:100px 7%;
 }
 
-.section h2{
-    font-size:55px;
-    margin-bottom:20px;
-    font-family:'Great Vibes', cursive;
-    color:#8b0015;
+.love-story{
+grid-template-columns:1fr;
 }
 
-.section p{
-    max-width:700px;
-    margin:auto;
-    font-size:24px;
-    line-height:1.8;
+.story-image{
+height:500px;
 }
 
-.countdown{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    margin-top:50px;
-    flex-wrap:wrap;
+.story-content h3{
+font-size:55px;
 }
 
-.box{
-    width:120px;
-    height:120px;
-    background:white;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.1);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-}
-
-.box h3{
-    font-size:42px;
-    color:#8b0015;
-}
-
-.box span{
-    font-size:18px;
-    color:#555;
+.story-content p{
+font-size:22px;
 }
 
 .gallery{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-    margin-top:50px;
+grid-template-columns:1fr;
+grid-auto-rows:300px;
 }
 
-.gallery img{
-    width:100%;
-    height:350px;
-    object-fit:cover;
-    border-radius:20px;
-    transition:.5s;
+.gallery .item{
+grid-column:unset !important;
+grid-row:unset !important;
 }
 
-.gallery img:hover{
-    transform:scale(1.04);
+.count-box{
+width:140px;
+height:140px;
 }
 
-footer{
-    padding:80px 20px;
-    background:#8b0015;
-    text-align:center;
+.count-box h2{
+font-size:50px;
 }
 
-footer h2{
-    font-family:'Great Vibes', cursive;
-    font-size:70px;
-    margin-bottom:20px;
+.section-title{
+font-size:60px;
 }
 
-.music{
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    width:60px;
-    height:60px;
-    border-radius:50%;
-    border:none;
-    background:#8b0015;
-    color:#fff;
-    font-size:22px;
-    cursor:pointer;
-    z-index:999;
-    box-shadow:0 10px 30px rgba(0,0,0,.3);
+.footer h2{
+font-size:70px;
 }
 
-@media(max-width:768px){
-
-.names{
-    font-size:62px;
+.event-box{
+padding:50px 25px;
 }
 
-.section h2{
-    font-size:42px;
+.event-box h3{
+font-size:55px;
 }
 
-.section p{
-    font-size:20px;
-}
-
-.invite-card h1{
-    font-size:42px;
+.event-info{
+font-size:22px;
 }
 
 }
+
 </style>
 </head>
+
 <body>
 
-<!-- OPEN SCREEN -->
+<!-- PARTICLES -->
 
-<div class="open-screen" id="openScreen">
+<div class="particles" id="particles"></div>
 
-    <div class="envelope" onclick="openInvite()">
+<!-- ================= PRELOADER ================= -->
 
-        <div class="envelope-body"></div>
+<div class="loader" id="loader">
 
-        <div class="invite-card">
-            <h1>Lê Văn Anh</h1>
+    <div class="envelope-wrap" id="envelope">
+
+        <div class="envelope"></div>
+
+        <div class="card">
+
+            <h2>Lê Văn Anh</h2>
+
             <p>&</p>
-            <h1>Nguyễn Thuỳ Anh</h1>
+
+            <h2>Nguyễn Thuỳ Anh</h2>
+
         </div>
 
-        <div class="envelope-top"></div>
+        <div class="flap"></div>
 
-        <div class="open-btn">
-            OPEN INVITATION
-        </div>
+    </div>
 
+    <div class="tap-text">
+        OPEN INVITATION
     </div>
 
 </div>
 
-<!-- MAIN -->
+<!-- ================= HERO ================= -->
 
-<div class="main" id="main">
+<section class="hero">
 
-    <section class="hero">
+    <div class="hero-bg"></div>
 
-        <div class="overlay"></div>
+    <div class="dark-overlay"></div>
 
-        <div class="hero-content">
+    <div class="hero-content">
 
-            <div class="small">
-                WEDDING INVITATION
-            </div>
-
-            <div class="names">
-                Lê Văn Anh
-            </div>
-
-            <div class="and">
-                &
-            </div>
-
-            <div class="names">
-                Nguyễn Thuỳ Anh
-            </div>
-
-            <div class="date">
-                16:00 • 25 / 06
-            </div>
-
+        <div class="save fade-item">
+            SAVE THE DATE
         </div>
 
-    </section>
-
-    <section class="section">
-
-        <h2>Our Wedding Day</h2>
-
-        <p>
-            Chúng tôi trân trọng kính mời bạn đến tham dự lễ cưới và chung vui cùng gia đình trong ngày trọng đại nhất cuộc đời.
-        </p>
-
-        <div class="countdown">
-
-            <div class="box">
-                <h3 id="days">00</h3>
-                <span>Days</span>
-            </div>
-
-            <div class="box">
-                <h3 id="hours">00</h3>
-                <span>Hours</span>
-            </div>
-
-            <div class="box">
-                <h3 id="minutes">00</h3>
-                <span>Minutes</span>
-            </div>
-
-            <div class="box">
-                <h3 id="seconds">00</h3>
-                <span>Seconds</span>
-            </div>
-
+        <div class="names fade-item">
+            Lê Văn Anh
         </div>
 
-    </section>
+        <div class="and fade-item">
+            &
+        </div>
 
-    <section class="section">
+        <div class="names fade-item">
+            Nguyễn Thuỳ Anh
+        </div>
 
-        <h2>Gallery</h2>
+        <div class="date fade-item">
+            16:00 • 25 / 06 / 2026
+        </div>
 
-        <div class="gallery">
+    </div>
 
-            <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1974&auto=format&fit=crop">
+    <div class="scroll">
+        SCROLL DOWN
+    </div>
+
+</section>
+
+<!-- ================= INTRO ================= -->
+
+<section class="section">
+
+    <h2 class="section-title reveal">
+        Wedding Invitation
+    </h2>
+
+    <p class="section-text reveal">
+        Chúng tôi trân trọng kính mời bạn đến tham dự lễ cưới và cùng chung vui trong ngày trọng đại nhất cuộc đời của chúng tôi. Sự hiện diện của bạn là niềm vinh hạnh và hạnh phúc lớn lao đối với gia đình hai bên.
+    </p>
+
+    <!-- COUNTDOWN -->
+
+    <div class="countdown-wrap">
+
+        <div class="count-box reveal">
+            <h2 id="days">00</h2>
+            <span>DAYS</span>
+        </div>
+
+        <div class="count-box reveal">
+            <h2 id="hours">00</h2>
+            <span>HOURS</span>
+        </div>
+
+        <div class="count-box reveal">
+            <h2 id="minutes">00</h2>
+            <span>MINUTES</span>
+        </div>
+
+        <div class="count-box reveal">
+            <h2 id="seconds">00</h2>
+            <span>SECONDS</span>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= LOVE STORY ================= -->
+
+<section class="section">
+
+    <div class="love-story">
+
+        <div class="story-image reveal-left">
 
             <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1974&auto=format&fit=crop">
 
-            <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1974&auto=format&fit=crop">
+        </div>
+
+        <div class="story-content reveal-right">
+
+            <h3>
+                Our Love Story
+            </h3>
+
+            <p>
+                Từ những lần gặp gỡ đầu tiên cho đến hôm nay, chúng tôi đã cùng nhau đi qua rất nhiều khoảnh khắc đẹp của cuộc sống. Và giờ đây, trong khoảnh khắc thiêng liêng nhất, chúng tôi mong muốn được chia sẻ niềm hạnh phúc ấy cùng những người thân yêu nhất.
+            </p>
 
         </div>
 
-    </section>
+    </div>
 
-    <footer>
+</section>
 
-        <h2>
-            Thank You
-        </h2>
+<!-- ================= GALLERY ================= -->
 
-        <p>
-            Rất hân hạnh được đón tiếp
-        </p>
+<section class="section">
 
-    </footer>
+    <h2 class="section-title reveal">
+        Wedding Gallery
+    </h2>
 
-</div>
+    <div class="gallery">
 
-<button class="music" onclick="toggleMusic()">
+        <div class="item item1 reveal">
+            <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1974&auto=format&fit=crop">
+        </div>
+
+        <div class="item item2 reveal">
+            <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1974&auto=format&fit=crop">
+        </div>
+
+        <div class="item item3 reveal">
+            <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1974&auto=format&fit=crop">
+        </div>
+
+        <div class="item item4 reveal">
+            <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1974&auto=format&fit=crop">
+        </div>
+
+        <div class="item item5 reveal">
+            <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1974&auto=format&fit=crop">
+        </div>
+
+        <div class="item item6 reveal">
+            <img src="https://images.unsplash.com/photo-1513278974582-3e1b4a4fa21d?q=80&w=1974&auto=format&fit=crop">
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= EVENT ================= -->
+
+<section class="section">
+
+    <div class="event-box reveal">
+
+        <h3>
+            Wedding Ceremony
+        </h3>
+
+        <div class="event-info">
+
+            16:00 • 25 / 06 / 2026
+            <br><br>
+
+            Trân trọng kính mời
+            <br>
+
+            Đến tham dự lễ thành hôn của
+            <br><br>
+
+            Lê Văn Anh & Nguyễn Thuỳ Anh
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <h2 class="reveal">
+        Thank You
+    </h2>
+
+    <p class="reveal">
+        VERY HAPPY TO WELCOME YOU
+    </p>
+
+</footer>
+
+<!-- ================= MUSIC BUTTON ================= -->
+
+<button class="music-btn" id="musicBtn">
 ♫
 </button>
 
-<audio id="bgMusic" loop>
-<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8e0f9d8.mp3?filename=wedding-110624.mp3" type="audio/mp3">
-</audio>
+<!-- ================= MUSIC ================= -->
 
+<audio id="music" loop>
+
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8e0f9d8.mp3?filename=wedding-110624.mp3" type="audio/mp3">
+
+</audio>
 <script>
 
-const openScreen = document.getElementById("openScreen");
-const main = document.getElementById("main");
-const music = document.getElementById("bgMusic");
+gsap.registerPlugin(ScrollTrigger);
 
-function openInvite(){
+/* ================= OPEN INVITATION ================= */
 
-    openScreen.classList.add("open");
+const envelope = document.getElementById("envelope");
+const loader = document.getElementById("loader");
+const music = document.getElementById("music");
+const musicBtn = document.getElementById("musicBtn");
+
+envelope.addEventListener("click", ()=>{
+
+    envelope.classList.add("open");
 
     setTimeout(()=>{
-        openScreen.style.display="none";
-        main.classList.add("show");
-        document.body.style.overflow="auto";
+
+        loader.classList.add("hide");
 
         music.play();
+
+        musicBtn.classList.add("playing");
+
+        document.body.style.overflowY = "auto";
 
     },1800);
-}
 
-function toggleMusic(){
+});
 
-    if(music.paused){
-        music.play();
-    }else{
+/* ================= MUSIC ================= */
+
+let playing = true;
+
+musicBtn.addEventListener("click", ()=>{
+
+    if(playing){
+
         music.pause();
+        musicBtn.classList.remove("playing");
+
+    }else{
+
+        music.play();
+        musicBtn.classList.add("playing");
+
     }
+
+    playing = !playing;
+
+});
+
+/* ================= HERO ANIMATION ================= */
+
+gsap.from(".hero-bg",{
+    scale:1.3,
+    duration:4,
+    ease:"power3.out"
+});
+
+gsap.from(".fade-item",{
+    opacity:0,
+    y:80,
+    stagger:.25,
+    duration:2,
+    ease:"power4.out"
+});
+
+/* ================= REVEAL ================= */
+
+gsap.utils.toArray(".reveal").forEach((el)=>{
+
+    gsap.from(el,{
+
+        scrollTrigger:{
+            trigger:el,
+            start:"top 85%"
+        },
+
+        opacity:0,
+        y:80,
+        duration:1.6,
+        ease:"power3.out"
+
+    });
+
+});
+
+gsap.utils.toArray(".reveal-left").forEach((el)=>{
+
+    gsap.from(el,{
+
+        scrollTrigger:{
+            trigger:el,
+            start:"top 85%"
+        },
+
+        opacity:0,
+        x:-120,
+        duration:1.6,
+        ease:"power3.out"
+
+    });
+
+});
+
+gsap.utils.toArray(".reveal-right").forEach((el)=>{
+
+    gsap.from(el,{
+
+        scrollTrigger:{
+            trigger:el,
+            start:"top 85%"
+        },
+
+        opacity:0,
+        x:120,
+        duration:1.6,
+        ease:"power3.out"
+
+    });
+
+});
+
+/* ================= PARALLAX ================= */
+
+gsap.to(".hero-bg",{
+
+    yPercent:15,
+    ease:"none",
+
+    scrollTrigger:{
+        trigger:".hero",
+        scrub:true
+    }
+
+});
+
+/* ================= GALLERY CINEMATIC ================= */
+
+gsap.utils.toArray(".gallery .item").forEach((item,i)=>{
+
+    gsap.from(item,{
+
+        scrollTrigger:{
+            trigger:item,
+            start:"top 90%"
+        },
+
+        opacity:0,
+        y:100,
+        scale:.9,
+        duration:1.5,
+        delay:i * .08,
+        ease:"power4.out"
+
+    });
+
+});
+
+/* ================= FLOATING PARTICLES ================= */
+
+const particles = document.getElementById("particles");
+
+for(let i=0;i<70;i++){
+
+    const particle = document.createElement("div");
+
+    particle.classList.add("particle");
+
+    particle.style.left = Math.random() * 100 + "vw";
+
+    particle.style.animationDuration =
+        8 + Math.random() * 10 + "s";
+
+    particle.style.animationDelay =
+        Math.random() * 5 + "s";
+
+    particle.style.opacity =
+        Math.random();
+
+    particle.style.transform =
+        `scale(${Math.random()*2})`;
+
+    particles.appendChild(particle);
+
 }
 
-/* COUNTDOWN */
+/* ================= COUNTDOWN ================= */
 
-const weddingDate = new Date("June 25, 2026 16:00:00").getTime();
+const weddingDate =
+new Date("June 25, 2026 16:00:00").getTime();
 
-setInterval(()=>{
+const countdown = ()=>{
 
     const now = new Date().getTime();
 
     const gap = weddingDate - now;
 
-    const d = Math.floor(gap / (1000 * 60 * 60 * 24));
-    const h = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const m = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((gap % (1000 * 60)) / 1000);
+    const days = Math.floor(
+        gap / (1000 * 60 * 60 * 24)
+    );
 
-    document.getElementById("days").innerText = d;
-    document.getElementById("hours").innerText = h;
-    document.getElementById("minutes").innerText = m;
-    document.getElementById("seconds").innerText = s;
+    const hours = Math.floor(
+        (gap % (1000 * 60 * 60 * 24))
+        /
+        (1000 * 60 * 60)
+    );
 
-},1000);
+    const minutes = Math.floor(
+        (gap % (1000 * 60 * 60))
+        /
+        (1000 * 60)
+    );
+
+    const seconds = Math.floor(
+        (gap % (1000 * 60))
+        /
+        1000
+    );
+
+    document.getElementById("days").innerHTML =
+        days < 10 ? "0"+days : days;
+
+    document.getElementById("hours").innerHTML =
+        hours < 10 ? "0"+hours : hours;
+
+    document.getElementById("minutes").innerHTML =
+        minutes < 10 ? "0"+minutes : minutes;
+
+    document.getElementById("seconds").innerHTML =
+        seconds < 10 ? "0"+seconds : seconds;
+
+}
+
+countdown();
+
+setInterval(countdown,1000);
+
+/* ================= SMOOTH SECTION MOTION ================= */
+
+gsap.utils.toArray("section").forEach((section)=>{
+
+    gsap.from(section,{
+
+        opacity:0,
+
+        scrollTrigger:{
+            trigger:section,
+            start:"top bottom",
+            end:"top center",
+            scrub:1
+        }
+
+    });
+
+});
+
+/* ================= TEXT PARALLAX ================= */
+
+gsap.to(".names",{
+
+    y:-40,
+
+    scrollTrigger:{
+        trigger:".hero",
+        scrub:true
+    }
+
+});
+
+/* ================= FOOTER EFFECT ================= */
+
+gsap.from(".footer h2",{
+
+    scrollTrigger:{
+        trigger:".footer",
+        start:"top 80%"
+    },
+
+    opacity:0,
+    y:100,
+    duration:2,
+    ease:"power4.out"
+
+});
 
 </script>
 
